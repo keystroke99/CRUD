@@ -1,46 +1,85 @@
-var createError = require('http-errors');
-var express = require('express');
+const express = require('express');
+const logger = require('morgan');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var bodyParser = require('body-parser');
+var exphbs = require('express-handlebars');
+var expressValidator = require('express-validator');
+const passport = require('passport');
+const pe = require('parse-error');
+const cors = require('cors');
+const v1 = require('./routes/v1');
 
-// MongoDB Connection through MONGOOSE
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true });
-mongoose.set('useCreateIndex', true);
+const app = express();
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const CONFIG = require('./config/config');
 
-var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
+// View Engine
+app.engine('handlebars', exphbs({ defaultLayout: 'layout' }));
+app.set('view engine', 'handlebars');
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+// app.use(cookieParser());
+// app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// Set Static Folder
+app.use(express.static(path.join(__dirname, 'views')));
+// Expose Media Folder
+app.use('/media', express.static(__dirname + '/media'));
+
+//Passport
+app.use(passport.initialize());
+
+//Log Env
+console.log("Environment:", CONFIG.app)
+
+
+
+//DATABASE
+const models = require("./models");
+
+// CORS
+app.use(cors());
+
+
+app.use('/v1', v1);
+
+app.use('/', function (req, res) {
+  res.statusCode = 200; //send the appropriate status code
+  res.json({
+    status: false,
+    message: "FASAK",
+    data: {}
+  })
+});
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send(err)
 });
 
 module.exports = app;
+
+process.on('unhandledRejection', error => {
+  console.error('Uncaught Error', pe(error));
+});

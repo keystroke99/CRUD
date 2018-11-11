@@ -1,0 +1,498 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "RESTFUL APIs",
+    "version": "1.0.0",
+    "title": "APIs for 1421",
+    "contact": {
+      "email": "keystroke99@gmail.com"
+    }
+  },
+  "host": "159.69.21.13:8888",
+  "basePath": "/v1",
+  "tags": [
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Create user",
+        "description": "Creates user that can now be used for authentication",
+        "operationId": "createUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Creates user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CreateUserResponse"
+            }
+          },
+          "422": {
+            "description": "Invalid operation",
+            "schema": {
+              "$ref": "#/definitions/ApiErrorResponse"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Return user",
+        "description": "This can only be done by the logged in user.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ReturnUserResponse"
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ApiUnauthorizezdResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update user",
+        "description": "This can only be done by the logged in user. \n for roles dropdown menu, use the below values.\n \n 'user', 'admin', 'superAdmin'",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Updates user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserBody"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful request",
+            "schema": {
+              "$ref": "#/definitions/ApiSuccessResponse"
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ApiUnauthorizezdResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Soft delete user",
+        "description": "This can only be done by the logged in user.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/ApiSuccessResponse"
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ApiUnauthorizezdResponse"
+            }
+          },
+          "default": {
+            "description": "successful operation"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/users/getByUserId/:userId": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get User By ID",
+        "description": "Returns User Data Object",
+        "operationId": "getByUserId",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Gets User Data for an ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/getByUserIdResponse"
+            }
+          },
+          "422": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ApiErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/getAllUsers": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get list of all users from Database",
+        "description": "Returns all users",
+        "operationId": "getAllUsers",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "422": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ApiErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "User Login",
+        "description": "Returns Bearer Token for JWT authentication. \n send the JWT token in the headers with 'Authorization' key \n Example : \n 'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWJiMGVlMzVhNzU5OGExNTc0ZmYwNmI1IiwiaWF0IjoxNTM4MzIyMDYyLCJleHAiOjE1MzgzMzIwNjJ9.UMVh85Ophzpr_wqCFYRpELV3fTsbbRRH2IDg9XCTd3Y' ",
+        "operationId": "loginUserWithEmailMobile",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Logins user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginUser"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/LoginUserResponse"
+            }
+          },
+          "422": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ApiErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "bearer_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "159.69.21.13:8888/v1/user/login",
+      "flow": "implicit"
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "CreateUser": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "example": "Rohini"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Kumar"
+        },
+        "email": {
+          "type": "string",
+          "example": "keystroke99@gmail.com"
+        },
+        "mobileNumber": {
+          "type": "string",
+          "example": "8885860111"
+        },
+        "password": {
+          "type": "string",
+          "example": "secure-password"
+        },
+        "mobileCountryCode": {
+          "type": "string",
+          "example": "+91"
+        },
+        "address": {
+          "type": "string",
+          "example": "1250, Road No 99, Old District"
+        },
+        "location": {
+          "type": "string",
+          "example": "22 Jump Street"
+        },
+        "city": {
+          "type": "string",
+          "example": "Hyderabad"
+        },
+        "country": {
+          "type": "string",
+          "example": "India"
+        }
+      }
+    },
+    "CreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "message": {
+          "type": "string",
+          "example": "Successfully created new user."
+        },
+        "token": {
+          "type": "string",
+          "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ...",
+          "description": "Authentication token"
+        }
+      }
+    },
+    "LoginUser": {
+      "type": "object",
+      "properties": {
+        "email / mobileNumber": {
+          "type": "string",
+          "example": "keystroke99@gmail.com / 8885860111"
+        },
+        "password": {
+          "type": "string",
+          "example": "secure-password"
+        }
+      }
+    },
+    "LoginUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "token": {
+          "type": "string",
+          "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ...",
+          "description": "Authentication token"
+        }
+      }
+    },
+    "ReturnUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "first": {
+              "type": "string",
+              "example": "John"
+            },
+            "last": {
+              "type": "string",
+              "example": "doe"
+            },
+            "email": {
+              "type": "string",
+              "example": "john.doe@gmail.com"
+            },
+            "phone": {
+              "type": "string",
+              "example": "8889401234"
+            }
+          }
+        }
+      }
+    },
+    "UpdateUserBody": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "example": "John"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "doe"
+        },
+        "address": {
+          "type": "string",
+          "example": "Basti"
+        },
+        "location": {
+          "type": "string",
+          "example": "Film Nagar"
+        },
+        "city": {
+          "type": "string",
+          "example": "Hyderabad"
+        },
+        "country": {
+          "type": "string",
+          "example": "India"
+        },
+        "role": {
+          "type": "string",
+          "example": "user"
+        }
+      }
+    },
+    "getByUserIdResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "userData": {
+          "type": "object",
+          "properties": {
+            "firstName": {
+              "type": "string",
+              "example": "John"
+            },
+            "lastName": {
+              "type": "string",
+              "example": "doe"
+            },
+            "email": {
+              "type": "string",
+              "example": "john.doe@gmail.com"
+            },
+            "mobile": {
+              "type": "string",
+              "example": "8889401234"
+            }
+          }
+        }
+      }
+    },
+    "ApiErrorResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": false
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "ApiSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "ApiUnauthorizezdResponse": {
+      "type": "string",
+      "example": "Unauthorized"
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Orange Tech",
+    "url": "http://orangetech.io"
+  }
+}
